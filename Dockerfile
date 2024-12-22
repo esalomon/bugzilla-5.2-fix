@@ -65,4 +65,6 @@ RUN rm -rf /var/www/html/data /var/www/html/localconfig /var/www/html/index.html
     mkdir /var/www/html/data
 RUN a2enmod expires && a2enmod headers && a2enmod rewrite && a2dismod mpm_event && a2enmod mpm_prefork
 EXPOSE 80/tcp
-CMD docker/startup.sh
+RUN apt-get -y install dos2unix
+RUN dos2unix /root/docker/startup.sh
+CMD /root/docker/startup.sh
