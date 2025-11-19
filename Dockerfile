@@ -3,56 +3,56 @@ FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=UTC
 
-RUN apt-get update && apt-get -y dist-upgrade
-RUN apt-get -y install \
- dos2unix \
- apache2 \
- mariadb-client \
- netcat-traditional \
- libappconfig-perl \
- libdate-calc-perl \
- libtemplate-perl \
- build-essential \
- libdatetime-timezone-perl \
- libdatetime-perl \
- libemail-address-perl \
- libemail-sender-perl \
- libemail-mime-perl \
- libemail-mime-modifier-perl \
- libdbi-perl \
- libdbix-connector-perl \
- libcgi-pm-perl \
- liblocale-codes-perl \
- libmath-random-isaac-perl \
- libmath-random-isaac-xs-perl \
- libapache2-mod-perl2 \
- libapache2-mod-perl2-dev \
- libchart-perl \
- libxml-perl \
- libxml-twig-perl \
- perlmagick \
- libgd-graph-perl \
- libtemplate-plugin-gd-perl \
- libsoap-lite-perl \
- libhtml-scrubber-perl \
- libjson-rpc-perl \
- libdaemon-generic-perl \
- libtheschwartz-perl \
- libtest-taint-perl \
- libauthen-radius-perl \
- libfile-slurp-perl \
- libencode-detect-perl \
- libmodule-build-perl \
- libnet-ldap-perl \
- libauthen-sasl-perl \
- libfile-mimeinfo-perl \
- libhtml-formattext-withlinks-perl \
- libgd-dev \
- libmysqlclient-dev \
- graphviz \
- tzdata \
- vim-common && \
- ln -sf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN apt-get update && apt-get -y dist-upgrade && apt-get -y install \
+apache2 \
+build-essential \
+dos2unix \
+graphviz \
+libapache2-mod-perl2 \
+libapache2-mod-perl2-dev \
+libappconfig-perl \
+libauthen-radius-perl \
+libauthen-sasl-perl \
+libchart-perl \
+libcgi-pm-perl \
+libdaemon-generic-perl \
+libdate-calc-perl \
+libdatetime-perl \
+libdatetime-timezone-perl \
+libdbi-perl \
+libdbix-connector-perl \
+libencode-detect-perl \
+libemail-address-perl \
+libemail-mime-modifier-perl \
+libemail-mime-perl \
+libemail-sender-perl \
+libfile-mimeinfo-perl \
+libfile-slurp-perl \
+libgd-dev \
+libgd-graph-perl \
+libhtml-formattext-withlinks-perl \
+libhtml-scrubber-perl \
+libjson-rpc-perl \
+liblocale-codes-perl \
+libmath-random-isaac-perl \
+libmath-random-isaac-xs-perl \
+libmodule-build-perl \
+libmysqlclient-dev \
+libnet-ldap-perl \
+libsoap-lite-perl \
+libtemplate-perl \
+libtemplate-plugin-gd-perl \
+libtest-taint-perl \
+libtheschwartz-perl \
+libxml-perl \
+libxml-twig-perl \
+mariadb-client \
+netcat-traditional \
+perlmagick \
+tzdata \
+vim-common && \
+  ln -sf /usr/share/zoneinfo/"$TZ" /etc/localtime && echo "$TZ" > /etc/timezone && \
+  apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Ubuntu22 doesn't ship new enough versions of a few modules, so get them from CPAN
 RUN cpan install Template::Toolkit Email::Address::XS Email::Sender DBD::MariaDB
