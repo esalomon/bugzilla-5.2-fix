@@ -1,9 +1,11 @@
 FROM ubuntu:22.04
 
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=UTC
 
 RUN apt-get update && apt-get -y dist-upgrade
 RUN apt-get -y install \
+ dos2unix \
  apache2 \
  mariadb-client \
  netcat-traditional \
@@ -48,23 +50,29 @@ RUN apt-get -y install \
  libgd-dev \
  libmysqlclient-dev \
  graphviz \
- vim-common
+ tzdata \
+ vim-common && \
+ ln -sf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Ubuntu22 doesn't ship new enough versions of a few modules, so get them from CPAN
 RUN cpan install Template::Toolkit Email::Address::XS Email::Sender DBD::MariaDB
 
+# Distribution package installation
+COPY docker /docker
+
+# Convert all text files to Unix line endings
+RUN dos2unix /docker/mysql/bugzilla.cnf \
+    && find /docker -type f -exec dos2unix {} \; && \
+    cp /docker/000-default.conf /etc/apache2/sites-available/000-default.conf
+
 WORKDIR /var/www/html
 COPY --chown=root:www-data . /var/www/html
-COPY ./docker/000-default.conf /etc/apache2/sites-available/000-default.conf
-COPY ./docker /root/docker
 
 # we don't want Docker droppings accessible by the web browser since they
 # might contain setup info you don't want public
-RUN rm -rf /var/www/html/docker* /var/www/html/Dockerfile*
-RUN rm -rf /var/www/html/data /var/www/html/localconfig /var/www/html/index.html && \
-    mkdir /var/www/html/data
-RUN a2enmod expires && a2enmod headers && a2enmod rewrite && a2dismod mpm_event && a2enmod mpm_prefork
+RUN rm -rf /var/www/html/docker* /var/www/html/Dockerfile* && \
+    rm -rf /var/www/html/data /var/www/html/localconfig /var/www/html/index.html && \
+    mkdir /var/www/html/data && \
+    a2enmod expires && a2enmod headers && a2enmod rewrite && a2dismod mpm_event && a2enmod mpm_prefork
 EXPOSE 80/tcp
-RUN apt-get -y install dos2unix
-RUN dos2unix /root/docker/startup.sh
-CMD /root/docker/startup.sh
+CMD ["/docker/startup.sh"]

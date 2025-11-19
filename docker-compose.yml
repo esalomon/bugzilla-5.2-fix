@@ -2,8 +2,6 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-version: '3.6'
-
 services:
   bugzilla5.web:
     build:
@@ -32,6 +30,7 @@ services:
       - BZ_DB_PASS=bugzilla
       - MARIADB_ROOT_HOST=%
       - MARIADB_ROOT_PASSWORD=bugzilla
+      - TZ=UTC
 
   bugzilla5.db:
     build:

@@ -6,8 +6,10 @@ apachectl start
 while :
 do
   echo "Waiting for database to be available..."
-  nc -z $BZ_DB_HOST $BZ_DB_PORT
-  [ $? -eq 0 ] && break
+  mysqladmin ping -h "$BZ_DB_HOST" -P "$BZ_DB_PORT" -u root -p"$MARIADB_ROOT_PASSWORD" --silent
+  if [ $? -eq 0 ]; then
+    break
+  fi
   sleep 2
 done
 echo "Checking database..."
