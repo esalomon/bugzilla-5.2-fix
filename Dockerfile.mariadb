@@ -1,4 +1,8 @@
 FROM mariadb:10.6
 COPY docker/my.cnf /etc/my.cnf
 COPY docker/mysql /etc/mysql/conf.d
-RUN apt update && apt -y dist-upgrade
+RUN apt update && apt -y dist-upgrade && \
+    mkdir -p /var/log && \
+    touch /var/log/mysqld.log && \
+    chown -R mysql:mysql /var/log && \
+    chmod 750 /var/log
