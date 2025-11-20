@@ -58,12 +58,12 @@ vim-common && \
 RUN cpan install Template::Toolkit Email::Address::XS Email::Sender DBD::MariaDB
 
 # Distribution package installation
-COPY docker /docker
+COPY docker /root/docker
 
 # Convert all text files to Unix line endings
-RUN dos2unix /docker/mysql/bugzilla.cnf \
-    && find /docker -type f -exec dos2unix {} \; && \
-    cp /docker/000-default.conf /etc/apache2/sites-available/000-default.conf
+RUN dos2unix /root/docker/mysql/bugzilla.cnf \
+    && find /root/docker -type f -exec dos2unix {} \; && \
+    cp /root/docker/000-default.conf /etc/apache2/sites-available/000-default.conf
 
 WORKDIR /var/www/html
 COPY --chown=root:www-data . /var/www/html
@@ -75,4 +75,4 @@ RUN rm -rf /var/www/html/docker* /var/www/html/Dockerfile* && \
     mkdir /var/www/html/data && \
     a2enmod expires && a2enmod headers && a2enmod rewrite && a2dismod mpm_event && a2enmod mpm_prefork
 EXPOSE 80/tcp
-CMD ["/docker/startup.sh"]
+CMD ["/root/docker/startup.sh"]
